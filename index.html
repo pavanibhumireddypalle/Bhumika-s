@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><title>Student Management</title>
+<style>body{font-family:Arial;max-width:800px;margin:40px auto;padding:20px}input,button{padding:10px;margin:5px}button{cursor:pointer}table{width:100%;border-collapse:collapse;margin-top:20px}th,td{padding:10px;border:1px solid #ccc}</style>
+</head><body>
+<h1>Student Management</h1>
+<form id="form"><input id="name" placeholder="Name" required><input id="age" type="number" placeholder="Age" required><input id="course" placeholder="Course" required><button>Add Student</button></form>
+<table><thead><tr><th>ID</th><th>Name</th><th>Age</th><th>Course</th><th>Action</th></tr></thead><tbody id="rows"></tbody></table>
+<script>
+const api="/api/students";
+async function load(){const r=await fetch(api);const data=await r.json();document.getElementById("rows").innerHTML=data.map(s=>`<tr><td>${s.id}</td><td>${s.name}</td><td>${s.age}</td><td>${s.course}</td><td><button onclick="del(${s.id})">Delete</button></td></tr>`).join("")}
+document.getElementById("form").onsubmit=async e=>{e.preventDefault();await fetch(api,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name:name.value,age:+age.value,course:course.value})});e.target.reset();load()}
+async function del(id){await fetch(api+"/"+id,{method:"DELETE"});load()} load();
+</script></body></html>
